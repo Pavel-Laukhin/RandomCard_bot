@@ -27,18 +27,20 @@ print("Hello, stranger!")
 
 # 2.
 print("""
-I will generate a random card.
-You should guess the card suit color or the card itself.
+I will generate a random card, but I won't tell you which one.
+You should guess the card or its attribute.
 What do you want to try to guess?
-1. Suit only
-2. Card
+1. Color (red or black)
+2. Suit (hearts, diamonds, clubs or spades)
+3. Card value (e.g. "2", "3", "J", "Q", "K", "A", etc.)
+4. Card itself (e.g. 2H (two hearts) or KD (king diamonds))
 """)
 
 def ask_game_mode():
-  return input("Enter 1 or 2\n")
+  return input("Enter 1, 2, 3 or 4\n")
   
-game_mode = ask_game_mode()
-while game_mode not in ["1", "2"]:
+game_mode = int(ask_game_mode())
+while game_mode not in [1, 2, 3, 4]:
   print("\nSorry, try again.")
   game_mode = ask_game_mode()
 
@@ -55,14 +57,18 @@ pretty_card = random_card_number + random_card_suit_symbol
 
 #4. -> #5. -> #6.
 def ask_color():
-  return input("Guess the suit: Red or Black?\n")
-
-def ask_card_number():
-  return input(f"Guess the number: {', '.join(CARD_NUMBER)}?\n")
+  return input("Guess the color: Red or Black?\n")
 
 def ask_card_suit():
   CARD_SUIT_str = "\n".join([f"{suit}. {CARD_SUIT_SYMBOL[suit]}" for suit in CARD_SUIT])
   return input(f"Guess the suit?\n{CARD_SUIT_str}\n")
+
+def ask_card_number():
+  return input(f"Guess the number: {', '.join(CARD_NUMBER)}?\n")
+
+def ask_card_itself():
+  return input("Guess the card itself (like \"2H\" (two hearts) or \"KD\" (king diamonds))?\n")
+
 
 def play_game_one():
   player_answer = ask_color()
@@ -79,22 +85,74 @@ def play_game_one():
     print("Incorrect! The card was: " + pretty_card)
 
 def play_game_two():
-  player_answer_one = ask_card_number()
-  while player_answer_one not in CARD_NUMBER:
-    print(f"\nSorry, but the acceptable answer shoud be one of: {CARD_NUMBER}. Please, try again.")
-    player_answer_one = ask_card_number()
-
-  player_answer_two = ask_card_suit()
-  while player_answer_two not in CARD_SUIT:
+  player_answer = ask_card_suit()
+  while player_answer not in CARD_SUIT:
     print(f"\nSorry, but the acceptable answer shoud be one of: {CARD_SUIT}. Please, try again.")
-    player_answer_two = ask_card_suit()
-  
-  if player_answer_one == random_card_number and player_answer_two == random_card_suit:
+    player_answer = ask_card_suit()
+    
+  if player_answer == random_card_suit:
     print("Correct! The card was: " + pretty_card)
   else:
     print("Incorrect! The card was: " + pretty_card)
 
-if game_mode == "1":
+
+def play_game_three():
+  player_answer = ask_card_number()
+  while player_answer not in CARD_NUMBER:
+    print(f"\nSorry, but the acceptable answer shoud be one of: {CARD_NUMBER}. Please, try again.")
+    player_answer = ask_card_number()
+  
+  if player_answer == random_card_number:
+    print("Correct! The card was: " + pretty_card)
+  else:
+    print("Incorrect! The card was: " + pretty_card)
+
+def play_game_four():
+  tint = "Sorry, but the acceptable answer should consist of the value and the suit, no spaces, 2 or 3 letters. For example, \"5C\" or \"10S\""
+  player_answer = ask_card_itself()
+  # print(player_answer[2])
+  
+  if len(player_answer) == 3 and player_answer[:2] != "10":
+    print(tint)
+    play_game_four()
+    return
+  elif len(player_answer) != 2:
+    print(tint)
+    play_game_four()
+    return
+
+  if len(player_answer) == 3:
+    value = player_answer[:2]
+  else:
+    value = player_answer[0]
+  if value not in CARD_NUMBER:
+    print(f"Sorry, but the the value of the card should be one of: {CARD_NUMBER}")
+    play_game_four()
+    return
+
+  if len(player_answer) == 3:
+    suit = player_answer[2]
+  else:
+    suit = player_answer[1]
+  # print(value)
+  # print(suit)
+  # return
+  
+  if suit not in CARD_SUIT:
+    print(f"\nSorry, but the suit should be the one of: {CARD_SUIT}. Please, try again.")
+    play_game_four()
+    return
+
+  if value == random_card_number and suit == random_card_suit:
+    print("Correct! The card was: " + pretty_card)
+  else:
+    print("Incorrect! The card was: " + pretty_card)
+
+if game_mode == 1:
   play_game_one()
-else:
+elif game_mode == 2:
   play_game_two()
+elif game_mode == 3:
+  play_game_three()
+else:
+  play_game_four()
