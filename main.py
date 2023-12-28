@@ -4,12 +4,10 @@ from random import choice
 
 
 class RandomCard:
-    VALUES = [
-        "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"
-    ]
+    VALUES = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
     SUITS = ["H", "D", "C", "S"]
     SUIT_SYMBOLS = {"H": "♡", "D": "♢", "C": "♣︎", "S": "♠︎"}
-    
+
     def __init__(self):
         self.random_value = choice(self.VALUES)
         self.random_suit = choice(self.SUITS)
@@ -30,17 +28,16 @@ class CardGame:
         self.play()
 
     def greeting(self):
-        print("""
-    Hello, stranger!
-    I will generate a random card, but I won't tell you which one.
-    You should guess the card or its attribute.
-    What do you want to try to guess?
-    1. Color (red or black)
-    2. Suit (hearts, diamonds, clubs or spades)
-    3. Card value (e.g. "2", "3", "J", "Q", "K", "A", etc.)
-    4. Card itself (e.g. 2H (two hearts) or KD (king diamonds))
-    Enter 1, 2, 3 or 4.
-    """)
+        print(
+            "Hello, stranger!\n"
+            "I will generate a random card, but I won't tell you which one.\n"
+            "You should guess the card or its attribute.\n"
+            "What do you want to try to guess?\n"
+            "1. Color (red or black)\n"
+            "2. Suit (hearts, diamonds, clubs or spades)\n"
+            "3. Card value (e.g. \"2\", \"3\", \"J\", \"Q\", \"K\", \"A\", etc.)\n"
+            "4. Card itself (e.g. 2H (two hearts) or KD (king diamonds))\n"
+            "Enter 1, 2, 3 or 4.\n")
 
     def ask_game_mode(self):
         mode = int(input())
