@@ -1,175 +1,151 @@
-# print("Hello, world!")
-# Решетка - Это комментарий
-
-# 'строка' "тоже строка"
-# True/False
-# [1, 1.5, True, "String"] - list внутри списка можно помещать всё, что угодно, причём одновременно
-
-# Пишем бота
-# 1. Приветствие
-# 2. Мануал
-# 3. Сгенерировать случайную карту
-# 4. Вопрос пользователю: красная карта или черная
-# 5. Получить ответ пользователя
-# 6. Сравнить ответы:
-# 6.1. Если угадал, то программа хвалит и раскрывает карту,
-# 6.2. Eсли нет, то не печалит пользователя и всё равно раскрывает карту
-
-# Домашнее задание
-# 1. Проверка на дурака
-# 2. Разные уровни сложности (угадать масть или карту, или же дать возможность человеку выбрать изначально уровень сложности)
-# 3. Внедрить количество раундов (через цикл while)
+# TODO: Внедрить количество раундов (3 попытки с подсказками)
 
 from random import choice
 
-# 1.
-print("Hello, stranger!")
 
-# 2.
-print("""
-I will generate a random card, but I won't tell you which one.
-You should guess the card or its attribute.
-What do you want to try to guess?
-1. Color (red or black)
-2. Suit (hearts, diamonds, clubs or spades)
-3. Card value (e.g. "2", "3", "J", "Q", "K", "A", etc.)
-4. Card itself (e.g. 2H (two hearts) or KD (king diamonds))
-""")
+class RandomCard:
+    VALUES = [
+        "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"
+    ]
+    SUITS = ["H", "D", "C", "S"]
+    SUIT_SYMBOLS = {"H": "♡", "D": "♢", "C": "♣︎", "S": "♠︎"}
+    
+    def __init__(self):
+        self.random_value = choice(self.VALUES)
+        self.random_suit = choice(self.SUITS)
 
-
-def ask_game_mode():
-  return input("Enter 1, 2, 3 or 4\n")
-
-
-game_mode = int(ask_game_mode())
-while game_mode not in [1, 2, 3, 4]:
-  print("\nSorry, try again.")
-  game_mode = ask_game_mode()
-
-#3.
-CARD_NUMBER = [
-    "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "К", "A"
-]
-CARD_SUIT = ["H", "D", "C", "S"]
-CARD_SUIT_SYMBOL = {"H": "♡", "D": "♢", "C": "♣︎", "S": "♠︎"}
-
-random_card_number = choice(CARD_NUMBER)
-random_card_suit = choice(CARD_SUIT)
-random_card_suit_symbol = CARD_SUIT_SYMBOL[random_card_suit]
-
-pretty_card = random_card_number + random_card_suit_symbol
+        self.suits_list = "\n".join(
+            [f"{suit}. {self.SUIT_SYMBOLS[suit]}" for suit in self.SUITS])
+        self.suit_symbol = self.SUIT_SYMBOLS[self.random_suit]
+        self.prettyfied = self.random_value + self.suit_symbol
 
 
-#4. -> #5. -> #6.
-def ask_color():
-  print("Guess the color: Red or Black?")
+class CardGame:
+    GAME_MODES = [1, 2, 3, 4]
+    game_mode = 1
+
+    def start(self):
+        self.greeting()
+        self.ask_game_mode()
+        self.play()
+
+    def greeting(self):
+        print("""
+    Hello, stranger!
+    I will generate a random card, but I won't tell you which one.
+    You should guess the card or its attribute.
+    What do you want to try to guess?
+    1. Color (red or black)
+    2. Suit (hearts, diamonds, clubs or spades)
+    3. Card value (e.g. "2", "3", "J", "Q", "K", "A", etc.)
+    4. Card itself (e.g. 2H (two hearts) or KD (king diamonds))
+    Enter 1, 2, 3 or 4.
+    """)
+
+    def ask_game_mode(self):
+        mode = int(input())
+        if mode not in self.GAME_MODES:
+            print("\nInvalid game mode. Sorry, try again.")
+            self.ask_game_mode()
+            return
+        self.game_mode = mode
+
+    def play(self):
+        card = RandomCard()
+
+        if self.game_mode == 1:
+            print("Guess the color: Red or Black?")
+            self.play_game_one(card)
+
+        elif self.game_mode == 2:
+            print(f"Guess the suit?\n{card.suits_list}")
+            self.play_game_two(card)
+
+        elif self.game_mode == 3:
+            print(f"Guess the value: {', '.join(card.VALUES)}?")
+            self.play_game_three(card)
+
+        else:
+            print("Guess the card itself (like \"2H\" (two hearts) or \"KD\" "
+                  "(king diamonds))?")
+            self.play_game_four(card)
+
+    def play_game_one(self, card):
+        player_answer = input()
+        ACCEPTABLE_ANSWERS = ["Red", "Black"]
+        if player_answer not in ACCEPTABLE_ANSWERS:
+            print("\nSorry, but the acceptable answer is only \"Red\" or "
+                  "\"Black\". Please, try again.")
+            self.play_game_one(card)
+            return
+
+        if player_answer == "Red" and card.random_suit in ["H", "D"]:
+            print("Correct! The card was: " + card.prettyfied)
+        elif player_answer == "Black" and card.random_suit in ["S", "C"]:
+            print("Correct! The card was: " + card.prettyfied)
+        else:
+            print("Incorrect! The card was: " + card.prettyfied)
+
+    def play_game_two(self, card):
+        player_answer = input()
+        if player_answer not in card.SUITS:
+            print(
+                "\nSorry, but the acceptable answer shoud be one of "
+                f"the following: {', '.join(card.SUITS)}. Please, try again.")
+            self.play_game_two(card)
+            return
+
+        if player_answer == card.random_suit:
+            print("Correct! The card was: " + card.prettyfied)
+        else:
+            print("Incorrect! The card was: " + card.prettyfied)
+
+    def play_game_three(self, card):
+        player_answer = input()
+        if player_answer not in card.VALUES:
+            print(
+                "\nSorry, but the acceptable answer shoud be one of "
+                f"the following: {', '.join(card.VALUES)}. Please, try again.")
+            self.play_game_three(card)
+            return
+
+        if player_answer == card.random_value:
+            print("Correct! The card was: " + card.prettyfied)
+        else:
+            print("Incorrect! The card was: " + card.prettyfied)
+
+    def play_game_four(self, card):
+        player_answer = input()
+
+        if ((len(player_answer) == 3 and player_answer[:2] != "10")
+                or (len(player_answer) not in [2, 3])):
+            print(
+                "Sorry, but the acceptable answer should consist of the value "
+                "and the suit, no spaces, 2 or 3 letters. For example, \"5C\" "
+                "or \"10S\"")
+            self.play_game_four(card)
+            return
+
+        value = player_answer[:2] if len(
+            player_answer) == 3 else player_answer[0]
+        if value not in card.VALUES:
+            print("Sorry, but the the value of the card should be one of the "
+                  f"followings: {', '.join(card.VALUES)}")
+            self.play_game_four(card)
+            return
+
+        suit = player_answer[2] if len(
+            player_answer) == 3 else player_answer[1]
+        if suit not in card.SUITS:
+            print("\nSorry, but the suit should be the one of the followings: "
+                  f"{', '.join(card.SUITS)}. Please, try again.")
+            self.play_game_four(card)
+            return
+
+        if value == card.random_value and suit == card.random_suit:
+            print("Correct! The card was: " + card.prettyfied)
+        else:
+            print("Incorrect! The card was: " + card.prettyfied)
 
 
-def ask_card_suit():
-  CARD_SUIT_str = "\n".join(
-      [f"{suit}. {CARD_SUIT_SYMBOL[suit]}" for suit in CARD_SUIT])
-  print(f"Guess the suit?\n{CARD_SUIT_str}")
-
-
-def ask_card_number():
-  print(f"Guess the number: {', '.join(CARD_NUMBER)}?")
-
-
-def ask_card_itself():
-  print(
-      "Guess the card itself (like \"2H\" (two hearts) or \"KD\" (king diamonds))?"
-  )
-
-
-def play_game_one():
-  player_answer = input()
-  acceptable_answers = ["Red", "Black"]
-  if player_answer not in acceptable_answers:
-    print(
-        "\nSorry, but the acceptable answer is only \"Red\" or \"Black\". Please, try again."
-    )
-    play_game_one()
-    return
-
-  if player_answer == "Red" and random_card_suit in ["H", "D"]:
-    print("Correct! The card was: " + pretty_card)
-  elif player_answer == "Black" and random_card_suit in ["S", "C"]:
-    print("Correct! The card was: " + pretty_card)
-  else:
-    print("Incorrect! The card was: " + pretty_card)
-
-
-def play_game_two():
-  player_answer = input()
-  if player_answer not in CARD_SUIT:
-    print(
-        f"\nSorry, but the acceptable answer shoud be one of: {CARD_SUIT}. Please, try again."
-    )
-    play_game_two()
-    return
-
-  if player_answer == random_card_suit:
-    print("Correct! The card was: " + pretty_card)
-  else:
-    print("Incorrect! The card was: " + pretty_card)
-
-
-def play_game_three():
-  player_answer = input()
-  if player_answer not in CARD_NUMBER:
-    print(
-        f"\nSorry, but the acceptable answer shoud be one of: {CARD_NUMBER}. Please, try again."
-    )
-    play_game_three()
-    return
-
-  if player_answer == random_card_number:
-    print("Correct! The card was: " + pretty_card)
-  else:
-    print("Incorrect! The card was: " + pretty_card)
-
-
-def play_game_four():
-  tint = "Sorry, but the acceptable answer should consist of the value and the suit, no spaces, 2 or 3 letters. For example, \"5C\" or \"10S\""
-  player_answer = input()
-
-  if (len(player_answer) == 3
-      and player_answer[:2] != "10") or (len(player_answer) not in [2, 3]):
-    print(tint)
-    play_game_four()
-    return
-
-  value = player_answer[:2] if len(player_answer) == 3 else player_answer[0]
-  if value not in CARD_NUMBER:
-    print(
-        f"Sorry, but the the value of the card should be one of: {CARD_NUMBER}"
-    )
-    play_game_four()
-    return
-
-  suit = player_answer[2] if len(player_answer) == 3 else player_answer[1]
-  if suit not in CARD_SUIT:
-    print(
-        f"\nSorry, but the suit should be the one of: {CARD_SUIT}. Please, try again."
-    )
-    play_game_four()
-    return
-
-  if value == random_card_number and suit == random_card_suit:
-    print("Correct! The card was: " + pretty_card)
-  else:
-    print("Incorrect! The card was: " + pretty_card)
-
-
-if game_mode == 1:
-  ask_color()
-  play_game_one()
-elif game_mode == 2:
-  ask_card_suit()
-  play_game_two()
-elif game_mode == 3:
-  ask_card_number()
-  play_game_three()
-else:
-  ask_card_itself()
-  play_game_four()
+CardGame().start()
