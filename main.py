@@ -29,15 +29,15 @@ class CardGame:
 
     def greeting(self):
         print(
-            "Hello, stranger!\n"
+            "Hello, stranger!\n\n"
             "I will generate a random card, but I won't tell you which one.\n"
-            "You should guess the card or its attribute.\n"
-            "What do you want to try to guess?\n"
+            "You should guess the card or its attribute.\n\n"
+            "What do you want to try to guess?\n\n"
             "1. Color (red or black)\n"
             "2. Suit (hearts, diamonds, clubs or spades)\n"
-            "3. Card value (e.g. \"2\", \"3\", \"J\", \"Q\", \"K\", \"A\", etc.)\n"
-            "4. Card itself (e.g. 2H (two hearts) or KD (king diamonds))\n"
-            "Enter 1, 2, 3 or 4.\n")
+            "3. Card value (e.g. \"2\", \"10\", \"J\", \"Q\", \"K\", \"A\", etc.)\n"
+            "4. Card itself (e.g. 2H (two hearts) or KD (king diamonds))\n\n"
+            "Enter 1, 2, 3 or 4.")
 
     def ask_game_mode(self):
         mode = int(input())
