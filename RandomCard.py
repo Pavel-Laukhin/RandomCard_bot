@@ -7,8 +7,8 @@ class RandomCard:
     def __init__(self, language: Language):
         if language == Language.en:
             self.VALUES = [
-                "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K",
-                "A"
+                "2", "3", "4", "5", "6", "7", "8", "9", "10", 
+                "J", "Q", "K", "A"
             ]
             self.SUITS = ["H", "D", "C", "S"]
             self.RED = "Red"
@@ -16,11 +16,16 @@ class RandomCard:
             self.COLORS = ["Red", "Black"]
             self.RED_SUITS = ["H", "D"]
             self.BLACK_SUITS = ["C", "S"]
-            SUIT_SYMBOLS = {"H": "♡", "D": "♢", "C": "♣︎", "S": "♠︎"}
+            SUIT_SYMBOLS = {
+                "H": "♡ (hearts)", 
+                "D": "♢ (diamonds)", 
+                "C": "♣︎ (clubs)", 
+                "S": "♠︎ (spades)"
+            }
         else:
             self.VALUES = [
-                "2", "3", "4", "5", "6", "7", "8", "9", "10", "В", "Д", "К",
-                "Т"
+                "2", "3", "4", "5", "6", "7", "8", "9", "10", 
+                "В", "Д", "К", "Т"
             ]
             self.SUITS = ["Ч", "Б", "К", "П"]
             self.RED = "Красный"
@@ -28,7 +33,12 @@ class RandomCard:
             self.COLORS = ["Красный", "Черный"]
             self.RED_SUITS = ["Ч", "Б"]
             self.BLACK_SUITS = ["К", "П"]
-            SUIT_SYMBOLS = {"Ч": "♡", "Б": "♢", "К": "♣︎", "П": "♠︎"}
+            SUIT_SYMBOLS = {
+                "Ч": "♡ (черви)", 
+                "Б": "♢ (бубны)", 
+                "К": "♣︎ (крести)", 
+                "П": "♠︎ (пики)"
+            }
     
         self.random_value = choice(self.VALUES).lower()
         self.random_suit = choice(self.SUITS).lower()

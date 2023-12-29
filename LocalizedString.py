@@ -10,9 +10,10 @@ class LocalizedString:
             Language.en: {
                 "greeting": (
                     "Hello, stranger!\n\n"
-                    "I will generate a random card, but I won't tell you which "
+                    "I'm a bot made by Pavel Laukhin."
+                    "I've got one card in mind, but I won't tell you which "
                     "one.\n"
-                    "You should guess the card or its attribute.\n\n"
+                    "You need to guess the card or its attribute.\n\n"
                     "What do you want to try to guess?\n\n"
                     "1. Color (red or black)\n"
                     "2. Suit (hearts, diamonds, clubs or spades)\n"
