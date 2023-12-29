@@ -1,4 +1,5 @@
 from random import choice
+
 from LocalizedString import Language
 
 

@@ -1,6 +1,7 @@
 from LocalizedString import LocalizedString
 from RandomCard import RandomCard
 
+
 class CardGame:
     
     def __init__(self, language: str):
