@@ -1,4 +1,3 @@
-# TODO: Внедрить количество раундов (3 попытки с подсказками)
 # TODO: Внедрить два языка
 
 from random import choice
@@ -10,13 +9,13 @@ class RandomCard:
     SUIT_SYMBOLS = {"H": "♡", "D": "♢", "C": "♣︎", "S": "♠︎"}
 
     def __init__(self):
-        self.random_value = choice(self.VALUES)
-        self.random_suit = choice(self.SUITS)
+        self.random_value = choice(self.VALUES).lower()
+        self.random_suit = choice(self.SUITS).lower()
 
         self.suits_list = "\n".join(
             [f"{suit}. {self.SUIT_SYMBOLS[suit]}" for suit in self.SUITS])
-        self.suit_symbol = self.SUIT_SYMBOLS[self.random_suit]
-        self.prettyfied = self.random_value + self.suit_symbol
+        self.suit_symbol = self.SUIT_SYMBOLS[self.random_suit.upper()]
+        self.prettyfied = self.random_value.upper() + self.suit_symbol
 
 
 class CardGame:
@@ -73,24 +72,25 @@ class CardGame:
             self.play_game_four(card)
 
     def play_game_one(self, card):
-        player_answer = input()
-        ACCEPTABLE_ANSWERS = ["Red", "Black"]
+        player_answer = input().lower()
+        ACCEPTABLE_ANSWERS = ["red", "black"]
         if player_answer not in ACCEPTABLE_ANSWERS:
             print("\nSorry, but the acceptable answer is only \"Red\" or "
                   "\"Black\". Please, try again.")
             self.play_game_one(card)
             return
 
-        if player_answer == "Red" and card.random_suit in ["H", "D"]:
+        if player_answer == "red" and card.random_suit in ["h", "d"]:
             print("Correct! The card was: " + card.prettyfied)
-        elif player_answer == "Black" and card.random_suit in ["S", "C"]:
+        elif player_answer == "black" and card.random_suit in ["s", "c"]:
             print("Correct! The card was: " + card.prettyfied)
         else:
             print("Incorrect! The card was: " + card.prettyfied)
 
     def play_game_two(self, card):
-        player_answer = input()
-        if player_answer not in card.SUITS:
+        player_answer = input().lower()
+        lowercase_suits = [suit.lower() for suit in card.SUITS]
+        if player_answer not in lowercase_suits:
             print(
                 "\nSorry, but the acceptable answer shoud be one of "
                 f"the following: {', '.join(card.SUITS)}. Please, try again.")
@@ -110,8 +110,9 @@ class CardGame:
                 print("Incorrect! The card was: " + card.prettyfied)
 
     def play_game_three(self, card):
-        player_answer = input()
-        if player_answer not in card.VALUES:
+        player_answer = input().lower()
+        lowercase_values = [value.lower() for value in card.VALUES]
+        if player_answer not in lowercase_values:
             print(
                 "\nSorry, but the acceptable answer shoud be one of "
                 f"the following: {', '.join(card.VALUES)}. Please, try again.")
@@ -131,7 +132,7 @@ class CardGame:
                 print("Incorrect! The card was: " + card.prettyfied)
 
     def play_game_four(self, card):
-        player_answer = input()
+        player_answer = input().lower()
 
         if ((len(player_answer) == 3 and player_answer[:2] != "10")
                 or (len(player_answer) not in [2, 3])):
@@ -144,7 +145,8 @@ class CardGame:
 
         value = player_answer[:2] if len(
             player_answer) == 3 else player_answer[0]
-        if value not in card.VALUES:
+        lowercase_values = [value.lower() for value in card.VALUES]
+        if value not in lowercase_values:
             print("Sorry, but the the value of the card should be one of the "
                   f"followings: {', '.join(card.VALUES)}")
             self.play_game_four(card)
@@ -152,7 +154,8 @@ class CardGame:
 
         suit = player_answer[2] if len(
             player_answer) == 3 else player_answer[1]
-        if suit not in card.SUITS:
+        lowercase_suits = [suit.lower() for suit in card.SUITS]
+        if suit not in lowercase_suits:
             print("\nSorry, but the suit should be the one of the followings: "
                   f"{', '.join(card.SUITS)}. Please, try again.")
             self.play_game_four(card)
@@ -173,8 +176,8 @@ class CardGame:
     # Hints
 
     def show_hint_for_game_two(self, card, player_answer):
-        RED = ["H", "D"]
-        BLACK = ["C", "S"]
+        RED = ["h", "d"]
+        BLACK = ["c", "s"]
         if card.random_suit == player_answer:
             print("Hint: You've guessed the suit!")
         elif ((card.random_suit in RED and player_answer not in RED)
@@ -185,16 +188,18 @@ class CardGame:
             print(f"Hint: The color is same, but the suit is different!")
             
     def show_hint_for_game_three(self, card, player_answer):
-        card_index = card.VALUES.index(card.random_value)
-        player_answer_card_index = card.VALUES.index(player_answer)
+        lowercase_values = [value.lower() for value in card.VALUES]
+        card_index = lowercase_values.index(card.random_value)
+        player_answer_card_index = lowercase_values.index(player_answer)
         if card_index > player_answer_card_index:
             print("Hint: The card value is higher!")
         else:
             print("Hint: The card value is lower!")
 
     def show_hint_for_game_four(self, card, player_answer_value, player_answer_suit):
-        card_value_index = card.VALUES.index(card.random_value)
-        player_answer_value_index = card.VALUES.index(player_answer_value)
+        lowercase_values = [value.lower() for value in card.VALUES]
+        card_value_index = lowercase_values.index(card.random_value)
+        player_answer_value_index = lowercase_values.index(player_answer_value)
         if card_value_index > player_answer_value_index:
             print("Hint: The card value is higher!")
         elif card_value_index == player_answer_value_index:
