@@ -1,4 +1,5 @@
 # TODO: Внедрить количество раундов (3 попытки с подсказками)
+# TODO: Внедрить два языка
 
 from random import choice
 
@@ -20,7 +21,8 @@ class RandomCard:
 
 class CardGame:
     GAME_MODES = [1, 2, 3, 4]
-    game_mode = 1
+    game_mode = None
+    attempts = None
 
     def start(self):
         self.greeting()
@@ -56,15 +58,18 @@ class CardGame:
 
         elif self.game_mode == 2:
             print(f"Guess the suit?\n{card.suits_list}")
+            self.attempts = 2
             self.play_game_two(card)
 
         elif self.game_mode == 3:
             print(f"Guess the value: {', '.join(card.VALUES)}?")
+            self.attempts = 3
             self.play_game_three(card)
 
         else:
             print("Guess the card itself (like \"2H\" (two hearts) or \"KD\" "
                   "(king diamonds))?")
+            self.attempts = 3
             self.play_game_four(card)
 
     def play_game_one(self, card):
@@ -95,7 +100,14 @@ class CardGame:
         if player_answer == card.random_suit:
             print("Correct! The card was: " + card.prettyfied)
         else:
-            print("Incorrect! The card was: " + card.prettyfied)
+            self.attempts -= 1
+            if self.attempts > 0:
+                print(f"Oops! Incorrect! You have {self.attempts} more tryes. "
+                      "Try again :)")
+                self.show_hint_for_game_two(card, player_answer)
+                self.play_game_two(card)
+            else:
+                print("Incorrect! The card was: " + card.prettyfied)
 
     def play_game_three(self, card):
         player_answer = input()
@@ -109,7 +121,14 @@ class CardGame:
         if player_answer == card.random_value:
             print("Correct! The card was: " + card.prettyfied)
         else:
-            print("Incorrect! The card was: " + card.prettyfied)
+            self.attempts -= 1
+            if self.attempts > 0:
+                print(f"Oops! Incorrect! You have {self.attempts} more tryes. "
+                      "Try again :)")
+                self.show_hint_for_game_three(card, player_answer)
+                self.play_game_three(card)
+            else:
+                print("Incorrect! The card was: " + card.prettyfied)
 
     def play_game_four(self, card):
         player_answer = input()
@@ -142,7 +161,46 @@ class CardGame:
         if value == card.random_value and suit == card.random_suit:
             print("Correct! The card was: " + card.prettyfied)
         else:
-            print("Incorrect! The card was: " + card.prettyfied)
+            self.attempts -= 1
+            if self.attempts > 0:
+                print(f"Oops! Incorrect! You have {self.attempts} more tryes. "
+                      "Try again :)")
+                self.show_hint_for_game_four(card, value, suit)
+                self.play_game_four(card)
+            else:
+                print("Incorrect! The card was: " + card.prettyfied)
+    
+    # Hints
 
+    def show_hint_for_game_two(self, card, player_answer):
+        RED = ["H", "D"]
+        BLACK = ["C", "S"]
+        if card.random_suit == player_answer:
+            print("Hint: You've guessed the suit!")
+        elif ((card.random_suit in RED and player_answer not in RED)
+                or (card.random_suit in BLACK
+                    and player_answer not in BLACK)):
+            print(f"Hint: The color is opposite!")
+        else:
+            print(f"Hint: The color is same, but the suit is different!")
+            
+    def show_hint_for_game_three(self, card, player_answer):
+        card_index = card.VALUES.index(card.random_value)
+        player_answer_card_index = card.VALUES.index(player_answer)
+        if card_index > player_answer_card_index:
+            print("Hint: The card value is higher!")
+        else:
+            print("Hint: The card value is lower!")
+
+    def show_hint_for_game_four(self, card, player_answer_value, player_answer_suit):
+        card_value_index = card.VALUES.index(card.random_value)
+        player_answer_value_index = card.VALUES.index(player_answer_value)
+        if card_value_index > player_answer_value_index:
+            print("Hint: The card value is higher!")
+        elif card_value_index == player_answer_value_index:
+            print("Hint: You have guessed the value of the card!")
+        else:
+            print("Hint: The card value is lower!")
+        self.show_hint_for_game_two(card, player_answer_suit)
 
 CardGame().start()
